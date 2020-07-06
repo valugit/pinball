@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>WebGL - Projet - Cours 29/06/2020</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+  <style>
+    html,
+    body {
+      margin: 0px;
+      padding: 0px;
+    }
+  </style>
+  <script src="https://threejs.org/build/three.js"></script>
+  <script type="text/javascript" src="../physi.js"></script>
+</head>
+
+<body>
+  <script type="text/javascript">
+    'use strict';
+
+	Physijs.scripts.worker = '../physijs_worker.js';
+	Physijs.scripts.ammo = 'examples/js/ammo.js';
+
+
+    let wWidth = window.innerWidth
+    let wHeight = window.innerHeight
+
+    let renderer = new THREE.WebGLRenderer({
+      antialias: true
+    })
+    renderer.setSize(wWidth, wHeight)
+    document.body.appendChild(renderer.domElement)
+
+    let scene = new Physijs.Scene()
+
+    let material = new THREE.MeshLambertMaterial({
+      color: 0xffffff
+    })
+
+    let board = new THREE.Group()
+
+    // Background
+    let backgroundGeometry = new THREE.CubeGeometry(230, 300, 100)
+    let backgroundMaterial = new THREE.MeshLambertMaterial({
+      color: 0xdd0000
+    })
+    let background = new Physijs.BoxMesh(backgroundGeometry, backgroundMaterial)
+    background.position.x = 15
+    background.position.z = -25
+    board.add(background)
+
+    // Top Border
+    let topBorderGeometry = new THREE.CubeGeometry(240, 10, 50)
+    let topBorder = new Physijs.BoxMesh(topBorderGeometry, material)
+    topBorder.position.z = 50
+    topBorder.position.y = 150
+    topBorder.position.x = 15
+    board.add(topBorder)
+    // Left Border
+    let leftBorderGeometry = new THREE.CubeGeometry(10, 300, 50)
+    let leftBorder = new Physijs.BoxMesh(leftBorderGeometry, material)
+    leftBorder.position.z = 50
+    leftBorder.position.x = -100
+    board.add(leftBorder)
+    // Right Border
+    let rightBorderGeometry = new THREE.CubeGeometry(10, 300, 50)
+    let rightBorder = new Physijs.BoxMesh(rightBorderGeometry, material)
+    rightBorder.position.z = 50
+    rightBorder.position.x = 130
+    board.add(rightBorder)
+    // Separator
+    let separatorGeometry = new THREE.CubeGeometry(10, 230, 50)
+    let separator = new Physijs.BoxMesh(separatorGeometry, material)
+    separator.position.z = 50
+    separator.position.x = 100
+    separator.position.y = -35
+    board.add(separator)
+
+    // TopLeftAngle
+    let angleTLGeometry = new THREE.CubeGeometry(10, 65, 50)
+    let angleTL = new Physijs.BoxMesh(angleTLGeometry, material)
+    angleTL.position.z = 50
+    angleTL.position.y = 125
+    angleTL.position.x = -75
+    angleTL.rotation.z = 3.14 / -4
+    board.add(angleTL)
+    // TopRightAngle
+    let angleTRGeometry = new THREE.CubeGeometry(10, 65, 50)
+    let angleTR = new Physijs.BoxMesh(angleTRGeometry, material)
+    angleTR.position.z = 50
+    angleTR.position.y = 125
+    angleTR.position.x = 105
+    angleTR.rotation.z = 3.14 / 4
+    board.add(angleTR)
+
+    // Cylinder Top Left
+    let cylTLGeometry = new THREE.CylinderGeometry(20, 20, 35, 12)
+    let cylTL = new Physijs.BoxMesh(cylTLGeometry, material)
+    cylTL.position.z = 50
+    cylTL.position.x = -50
+    cylTL.position.y = 50
+    cylTL.rotation.x = 3.14 / 2
+    board.add(cylTL)
+    // Cylinder Top Right
+    let cylTRGeometry = new THREE.CylinderGeometry(20, 20, 35, 12)
+    let cylTR = new Physijs.BoxMesh(cylTRGeometry, material)
+    cylTR.position.z = 50
+    cylTR.position.x = 50
+    cylTR.position.y = 50
+    cylTR.rotation.x = 3.14 / 2
+    board.add(cylTR)
+    // Cylinder Bottom
+    let cylBGeometry = new THREE.CylinderGeometry(20, 20, 35, 12)
+    let cylB = new Physijs.BoxMesh(cylBGeometry, material)
+    cylB.position.z = 50
+    cylB.position.y = -30
+    cylB.rotation.x = 3.14 / 2
+    board.add(cylB)
+
+    // Left Bat
+    let batLGeometry = new THREE.CubeGeometry(40, 10, 50)
+    let batL = new Physijs.BoxMesh(batLGeometry, material)
+    batL.position.z = 50
+    batL.position.y = -130
+    batL.position.x = -30
+    batL.rotation.z = (5 * Math.PI) / 6
+    board.add(batL)
+    // Right Bat
+    let batRGeometry = new THREE.CubeGeometry(40, 10, 50)
+    let batR = new Physijs.BoxMesh(batRGeometry, material)
+    batR.position.z = 50
+    batR.position.y = -130
+    batR.position.x = 30
+    batR.rotation.z = Math.PI / 6
+    board.add(batR)
+
+    document.addEventListener('keypress', e => {
+        if (e.key == 's') {
+            batL.rotation.z = (7 * Math.PI) / 6
+            batL.position.y = -115
+        }
+        if (e.key == 'l') {
+            batR.rotation.z = -Math.PI / 6
+            batR.position.y = -115
+        }
+    })
+    document.addEventListener('keyup', e => {
+        if (e.key == 's') {
+            batL.rotation.z = (5 * Math.PI) / 6
+            batL.position.y = -130
+        }
+        if (e.key == 'l') {
+            batR.rotation.z = Math.PI / 6
+            batR.position.y = -130
+        }
+    })
+
+    scene.add(board)
+
+    // Camera
+    let camera = new THREE.PerspectiveCamera(45, wWidth / wHeight, 1, 10000)
+    camera.position.y = -150
+    camera.position.z = 500
+    camera.rotation.x = 0.3
+    scene.add(camera)
+
+    // Lighting
+    let pointLight = new THREE.PointLight(0xffffff)
+    pointLight.position.set(0, 300, 200)
+
+    scene.add(pointLight)
+
+    let render = function () {
+      scene.simulate()
+      requestAnimationFrame(render)
+
+      renderer.render(scene, camera)
+    }
+
+    render()
+  </script>
+
+</body>
+
+</html>
