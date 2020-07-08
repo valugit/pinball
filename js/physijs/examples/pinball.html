@@ -17,6 +17,7 @@
 </head>
 
 <body>
+    <audio style="display:none" id="audio"><source src="images/hit.mp3" type="audio/mp3"></audio>
   <script type="text/javascript">
     'use strict';
 
@@ -35,145 +36,211 @@
 
     let scene = new Physijs.Scene()
 
-    let material = new THREE.MeshLambertMaterial({
-      color: 0xffffff
-    })
+    // Loader
+    let loader = new THREE.TextureLoader();
 
-    let board = new THREE.Group()
+    // Materials
+    let woodMaterial = Physijs.createMaterial(
+        new THREE.MeshLambertMaterial({ map: loader.load( 'images/wood.jpg' ) }),
+        .8, // high friction
+        .4 // low restitution
+    );
+    let glitterMaterial = Physijs.createMaterial(
+        new THREE.MeshLambertMaterial({ map: loader.load( 'images/glitter.jpg' ) }),
+        .8, // high friction
+        .4 // low restitution
+    );
+    let dark_woodMaterial = Physijs.createMaterial(
+        new THREE.MeshLambertMaterial({ map: loader.load( 'images/dark_wood.jpg' ) }),
+        .8, // high friction
+        .4 // low restitution
+    );
+    let silverMaterial = Physijs.createMaterial(
+        new THREE.MeshLambertMaterial({ map: loader.load( 'images/silver.jpg' ) }),
+        .8, // high friction
+        .4 // low restitution
+    );
 
     // Background
     let backgroundGeometry = new THREE.CubeGeometry(230, 300, 100)
-    let backgroundMaterial = new THREE.MeshLambertMaterial({
-      color: 0xdd0000
-    })
-    let background = new Physijs.BoxMesh(backgroundGeometry, backgroundMaterial)
-    background.position.x = 15
-    background.position.z = -25
-    board.add(background)
+    let background = new Physijs.BoxMesh(backgroundGeometry, woodMaterial, 0, 0)
+    background.position.set(15, 0, -25)
+    background.name = 'background'
+    background.receiveShadow = true;
 
     // Top Border
     let topBorderGeometry = new THREE.CubeGeometry(240, 10, 50)
-    let topBorder = new Physijs.BoxMesh(topBorderGeometry, material)
-    topBorder.position.z = 50
-    topBorder.position.y = 150
-    topBorder.position.x = 15
-    board.add(topBorder)
+    let topBorder = new Physijs.BoxMesh(topBorderGeometry, dark_woodMaterial, 0)
+    topBorder.position.set(15, 150, 50)
+    scene.add(topBorder)
     // Left Border
     let leftBorderGeometry = new THREE.CubeGeometry(10, 300, 50)
-    let leftBorder = new Physijs.BoxMesh(leftBorderGeometry, material)
-    leftBorder.position.z = 50
-    leftBorder.position.x = -100
-    board.add(leftBorder)
+    let leftBorder = new Physijs.BoxMesh(leftBorderGeometry, dark_woodMaterial, 0)
+    leftBorder.position.set(-100, 0, 50)
+    scene.add(leftBorder)
     // Right Border
     let rightBorderGeometry = new THREE.CubeGeometry(10, 300, 50)
-    let rightBorder = new Physijs.BoxMesh(rightBorderGeometry, material)
-    rightBorder.position.z = 50
-    rightBorder.position.x = 130
-    board.add(rightBorder)
+    let rightBorder = new Physijs.BoxMesh(rightBorderGeometry, dark_woodMaterial, 0)
+    rightBorder.position.set(130, 0, 50)
+    scene.add(rightBorder)
     // Separator
     let separatorGeometry = new THREE.CubeGeometry(10, 230, 50)
-    let separator = new Physijs.BoxMesh(separatorGeometry, material)
-    separator.position.z = 50
-    separator.position.x = 100
-    separator.position.y = -35
-    board.add(separator)
+    let separator = new Physijs.BoxMesh(separatorGeometry, dark_woodMaterial, 0)
+    separator.position.set(100, -35, 50)
+    scene.add(separator)
 
     // TopLeftAngle
     let angleTLGeometry = new THREE.CubeGeometry(10, 65, 50)
-    let angleTL = new Physijs.BoxMesh(angleTLGeometry, material)
-    angleTL.position.z = 50
-    angleTL.position.y = 125
-    angleTL.position.x = -75
+    let angleTL = new Physijs.BoxMesh(angleTLGeometry, dark_woodMaterial, 0)
+    angleTL.position.set(-75, 125, 50)
     angleTL.rotation.z = 3.14 / -4
-    board.add(angleTL)
+    scene.add(angleTL)
     // TopRightAngle
     let angleTRGeometry = new THREE.CubeGeometry(10, 65, 50)
-    let angleTR = new Physijs.BoxMesh(angleTRGeometry, material)
-    angleTR.position.z = 50
-    angleTR.position.y = 125
-    angleTR.position.x = 105
+    let angleTR = new Physijs.BoxMesh(angleTRGeometry, dark_woodMaterial, 0)
+    angleTR.position.set(105, 125, 50)
     angleTR.rotation.z = 3.14 / 4
-    board.add(angleTR)
+    scene.add(angleTR)
 
     // Cylinder Top Left
     let cylTLGeometry = new THREE.CylinderGeometry(20, 20, 35, 12)
-    let cylTL = new Physijs.BoxMesh(cylTLGeometry, material)
-    cylTL.position.z = 50
-    cylTL.position.x = -50
-    cylTL.position.y = 50
+    let cylTL = new Physijs.CylinderMesh(cylTLGeometry, glitterMaterial, 0)
+    cylTL.position.set(-50, 50, 50)
     cylTL.rotation.x = 3.14 / 2
-    board.add(cylTL)
+    cylTL.castShadow = true
+    scene.add(cylTL)
     // Cylinder Top Right
     let cylTRGeometry = new THREE.CylinderGeometry(20, 20, 35, 12)
-    let cylTR = new Physijs.BoxMesh(cylTRGeometry, material)
-    cylTR.position.z = 50
-    cylTR.position.x = 50
-    cylTR.position.y = 50
+    let cylTR = new Physijs.CylinderMesh(cylTRGeometry, glitterMaterial, 0)
+    cylTR.position.set(50, 50, 50)
     cylTR.rotation.x = 3.14 / 2
-    board.add(cylTR)
+    cylTR.castShadow = true
+    scene.add(cylTR)
     // Cylinder Bottom
     let cylBGeometry = new THREE.CylinderGeometry(20, 20, 35, 12)
-    let cylB = new Physijs.BoxMesh(cylBGeometry, material)
-    cylB.position.z = 50
-    cylB.position.y = -30
+    let cylB = new Physijs.CylinderMesh(cylBGeometry, glitterMaterial, 0)
+    cylB.position.set(0, -30, 50)
     cylB.rotation.x = 3.14 / 2
-    board.add(cylB)
+    cylB.castShadow = true
+    scene.add(cylB)
+
+    let interactiveMaterial = new THREE.MeshLambertMaterial({color: 0xc0c0ff})
 
     // Left Bat
     let batLGeometry = new THREE.CubeGeometry(40, 10, 50)
-    let batL = new Physijs.BoxMesh(batLGeometry, material)
-    batL.position.z = 50
-    batL.position.y = -130
-    batL.position.x = -30
+    let batL = new Physijs.BoxMesh(batLGeometry, silverMaterial, 0)
+    batL.position.set(-30, -130, 50)
     batL.rotation.z = (5 * Math.PI) / 6
-    board.add(batL)
+    scene.add(batL)
+    // batL.setDamping(0, 0.9)
+    // let batLHinge = new Physijs.DOFConstraint(
+    //     batL,
+    //     background,
+    //     new THREE.Vector3(10, 10, 0)
+    // )
+    // batLHinge.setAngularLowerLimit({ x: -Math.PI/2, y: 0, z: 0 });
+    // batLHinge.setAngularUpperLimit({ x: Math.PI/2, y: 0, z: 0 });
+    // scene.addConstraint(batLHinge)
     // Right Bat
     let batRGeometry = new THREE.CubeGeometry(40, 10, 50)
-    let batR = new Physijs.BoxMesh(batRGeometry, material)
-    batR.position.z = 50
-    batR.position.y = -130
-    batR.position.x = 30
+    let batR = new Physijs.BoxMesh(batRGeometry, silverMaterial, 0)
+    batR.position.set(30, -130, 50)
     batR.rotation.z = Math.PI / 6
-    board.add(batR)
+    scene.add(batR)
+
+    // Launcher
+    let launcherGeometry = new THREE.CylinderGeometry(9, 9, 50)
+    let launcher = new Physijs.CylinderMesh(launcherGeometry, silverMaterial, 0)
+    launcher.position.set(112.5, -125, 50)
+    launcher.__dirtyPosition = true;
+    launcher.name = 'launcher'
+    scene.add(launcher)
+
+    launcher.addEventListener('collision', function( other_object, relative_velocity, relative_rotation, contact_normal ) {
+        console.log('BUUUUUUUUUUMP')
+        console.log(other_object)
+    })
 
     document.addEventListener('keypress', e => {
         if (e.key == 's') {
-            batL.rotation.z = (7 * Math.PI) / 6
-            batL.position.y = -115
+            // batL.rotation.z = (7 * Math.PI) / 6
+            // batL.position.y = -115
+              // Left
+            // batLHinge.configureAngularMotor( 1, -Math.PI / 3, Math.PI / 3, 1, 200 );
+            // batLHinge.enableAngularMotor( 1 );
         }
-        if (e.key == 'l') {
-            batR.rotation.z = -Math.PI / 6
-            batR.position.y = -115
+        // if (e.key == 'l') {
+        //     batR.rotation.z = -Math.PI / 6
+        //     batR.position.y = -115
+        // }
+        if (e.key == ' ' && launcher.position.y > -150) {
+            launcher.position.y -= 1
         }
     })
     document.addEventListener('keyup', e => {
-        if (e.key == 's') {
-            batL.rotation.z = (5 * Math.PI) / 6
-            batL.position.y = -130
-        }
-        if (e.key == 'l') {
-            batR.rotation.z = Math.PI / 6
-            batR.position.y = -130
+        // if (e.key == 's') {
+        //     batL.rotation.z = (5 * Math.PI) / 6
+        //     batL.position.y = -130
+        // }
+        // if (e.key == 'l') {
+        //     batR.rotation.z = Math.PI / 6
+        //     batR.position.y = -130
+        // }
+        if (e.key == ' ') {
+            launcher.position.y = -125
         }
     })
 
-    scene.add(board)
+    // scene.add(board)
+
+    // Ball
+    let ballGeometry = new THREE.SphereGeometry(9, 32, 32)
+    let ball = new Physijs.SphereMesh(ballGeometry, glitterMaterial)
+    ball.position.set(115, 50, 50)
+    ball.position.set(5, 0, 50)
+    ball.collisions = 0
+    ball.name = 'baballe'
+    ball.castShadow = true
+    scene.add(ball)
+
+    ball.addEventListener( 'collision', function( other_object, relative_velocity, relative_rotation, contact_normal ) {
+        // `this` has collided with `other_object` with an impact speed of `relative_velocity` and a rotational force of `relative_rotation` and at normal `contact_normal`
+        // So we send the ball back at the relative_velocity with the direction of the contact_normal ..?
+        console.log('bump')
+        console.log(relative_velocity)
+        document.getElementById('audio').play()
+        // ball.setLinearVelocity(relative_velocity)
+    });
+    scene.add(background)
 
     // Camera
     let camera = new THREE.PerspectiveCamera(45, wWidth / wHeight, 1, 10000)
     camera.position.y = -150
     camera.position.z = 500
-    camera.rotation.x = 0.3
+    camera.rotation.x = Math.PI/10
     scene.add(camera)
 
-    // Lighting
-    let pointLight = new THREE.PointLight(0xffffff)
-    pointLight.position.set(0, 300, 200)
-
-    scene.add(pointLight)
+    // Light
+    let light = new THREE.DirectionalLight( 0xFFFFFF );
+    light.position.set( -50, -50, 115 );
+    light.target.position.copy( scene.position );
+    light.castShadow = true;
+    light.shadow.camera.left = -60;
+    light.shadow.camera.top = -60;
+    light.shadow.camera.right = 60;
+    light.shadow.camera.bottom = 60;
+    light.shadow.camera.near = 20;
+    light.shadow.camera.far = 200;
+    light.shadow.bias = -.0001
+    light.shadow.mapSize.width = light.shadow.mapSize.height = 2048;
+    // light.shadowDarkness = .7;
+    scene.add( light );
 
     let render = function () {
-      scene.simulate()
+        scene.simulate(undefined, 2)
+        // scene.addEventListener('update', () => {
+        //     launcher.position.y -= 0.01
+        // })
       requestAnimationFrame(render)
 
       renderer.render(scene, camera)
